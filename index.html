@@ -1,201 +1,96 @@
 <!DOCTYPE html>
-<html lang="et">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Responsible Gaming Demo</title>
+  <title>iGaming Frontend Portfolio – Martin Adamson</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: system-ui, sans-serif; background: #f5f5f5; color: #1a1a1a; min-height: 100vh; padding: 2rem 1rem; }
-    h1 { font-size: 22px; font-weight: 500; margin-bottom: 4px; }
-    .subtitle { font-size: 14px; color: #666; margin-bottom: 1.5rem; }
-    .wrap { max-width: 480px; margin: 0 auto; }
-    .card { background: #fff; border: 1px solid #e5e5e5; border-radius: 12px; padding: 1.25rem; margin-bottom: 1rem; }
-    .label { font-size: 13px; color: #888; margin-bottom: 6px; }
-    .big-num { font-size: 36px; font-weight: 500; }
-    .section-title { font-size: 12px; font-weight: 500; color: #888; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 10px; }
-    .badge { display: inline-block; font-size: 12px; padding: 3px 10px; border-radius: 8px; margin-bottom: 12px; }
-    .badge-green { background: #eafaf1; color: #1a7a4a; }
-    .badge-red { background: #fdecea; color: #a32d2d; }
-    .badge-warn { background: #fef9ec; color: #7a5c00; }
-    .row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #f0f0f0; }
-    .row:last-child { border-bottom: none; }
-    .row-label { font-size: 14px; color: #666; }
-    .progress-bg { background: #f0f0f0; border-radius: 4px; height: 6px; flex: 1; margin: 0 12px; overflow: hidden; }
-    .progress-fill { height: 100%; border-radius: 4px; transition: width 0.4s; }
-    .btn { border: 1px solid #ddd; background: transparent; color: #1a1a1a; border-radius: 8px; padding: 8px 16px; font-size: 14px; cursor: pointer; }
-    .btn:hover { background: #f5f5f5; }
-    .btn:disabled { opacity: 0.4; cursor: not-allowed; }
-    .btn-danger { border-color: #f0a0a0; color: #a32d2d; }
-    .btn-danger:hover { background: #fdecea; }
-    .popup { display: none; background: #fff; border: 1px solid #ddd; border-radius: 12px; padding: 1.5rem; text-align: center; margin-bottom: 1rem; }
-    .popup.show { display: block; }
-    .popup h3 { font-size: 16px; font-weight: 500; margin-bottom: 8px; }
-    .popup p { font-size: 14px; color: #666; margin-bottom: 1rem; }
-    .btn-row { display: flex; gap: 8px; justify-content: center; }
-    .dep-row { display: flex; gap: 8px; margin-top: 10px; }
-    .dep-row input { flex: 1; padding: 8px 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; }
-    select { border: 1px solid #ddd; border-radius: 8px; padding: 6px 10px; font-size: 14px; background: #fff; }
+    .wrap { max-width: 600px; margin: 0 auto; }
+    .header { margin-bottom: 2rem; }
+    .header h1 { font-size: 22px; font-weight: 500; margin-bottom: 4px; }
+    .header p { font-size: 14px; color: #888; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; }
+    .demo-card { background: #fff; border: 1px solid #e5e5e5; border-radius: 12px; padding: 1.25rem; text-decoration: none; display: block; }
+    .demo-card:hover { border-color: #bbb; }
+    .demo-icon { width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 12px; }
+    .demo-title { font-size: 15px; font-weight: 500; color: #1a1a1a; margin-bottom: 6px; }
+    .demo-desc { font-size: 13px; color: #666; line-height: 1.5; margin-bottom: 12px; }
+    .demo-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+    .tag { font-size: 11px; padding: 2px 8px; border-radius: 8px; background: #f0f0f0; color: #666; }
+    .demo-link { font-size: 13px; color: #378ADD; margin-top: 12px; display: block; }
+    hr { border: none; border-top: 1px solid #e5e5e5; margin: 2rem 0; }
+    .about { background: #f0f0f0; border-radius: 12px; padding: 1.25rem; }
+    .about-title { font-size: 12px; font-weight: 500; color: #888; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 10px; }
+    .about-row { display: flex; justify-content: space-between; padding: 6px 0; font-size: 13px; border-bottom: 1px solid #e0e0e0; }
+    .about-row:last-child { border-bottom: none; }
+    .about-label { color: #888; }
+    .about-val { color: #1a1a1a; font-weight: 500; }
+    a.about-link { color: #378ADD; text-decoration: none; }
   </style>
 </head>
 <body>
 <div class="wrap">
-  <h1>Responsible Gaming Demo</h1>
-  <p class="subtitle">Reality Check · Player Limits · Self-Exclusion</p>
-
-  <div class="popup" id="popup">
-    <div class="badge badge-warn">Reality check</div>
-    <h3>Oled mänginud <span id="popup-time"></span></h3>
-    <p>Sa oled täna teinud sissemakseid <strong id="popup-spent">€0</strong>. Kas soovid jätkata?</p>
-    <div class="btn-row">
-      <button class="btn btn-danger" onclick="stopPlaying()">Lõpeta mäng</button>
-      <button class="btn" onclick="continuePlaying()">Jätka mängimist</button>
-    </div>
+  <div class="header">
+    <h1>iGaming Frontend Portfolio</h1>
+    <p>Freelance developer · Tallinn · HTML / CSS / JavaScript</p>
   </div>
 
-  <div class="card">
-    <div class="label">Mänguaeg täna</div>
-    <div class="big-num" id="timer">00:00:00</div>
-    <div style="margin-top:10px; display:flex; gap:8px;">
-      <button class="btn" id="start-btn" onclick="toggleTimer()">Alusta mängu</button>
-      <button class="btn btn-danger" onclick="resetAll()">Reset</button>
-    </div>
+  <div class="grid">
+    <a class="demo-card" href="responsible-gaming.html">
+      <div class="demo-icon" style="background:#e6f1fb;">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8" stroke="#378ADD" stroke-width="1.5"/><path d="M10 6v4l3 2" stroke="#378ADD" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </div>
+      <div class="demo-title">Responsible Gaming</div>
+      <div class="demo-desc">Reality Check timer, player deposit and loss limits, self-exclusion – MGA compliance features.</div>
+      <div class="demo-tags">
+        <span class="tag">MGA compliance</span>
+        <span class="tag">Reality Check</span>
+        <span class="tag">Self-exclusion</span>
+      </div>
+      <span class="demo-link">View demo →</span>
+    </a>
+
+    <a class="demo-card" href="bonus-calculator.html">
+      <div class="demo-icon" style="background:#eafaf1;">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="3" y="3" width="14" height="14" rx="2" stroke="#1D9E75" stroke-width="1.5"/><path d="M7 10h6M10 7v6" stroke="#1D9E75" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </div>
+      <div class="demo-title">Bonus Calculator</div>
+      <div class="demo-desc">Wagering requirements, bonus expiry tracking, deposit match calculator with live progress.</div>
+      <div class="demo-tags">
+        <span class="tag">Wagering</span>
+        <span class="tag">Bonus engine</span>
+        <span class="tag">Player limits</span>
+      </div>
+      <span class="demo-link">View demo →</span>
+    </a>
+
+    <a class="demo-card" href="platform-demo.html">
+      <div class="demo-icon" style="background:#fef9ec;">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="2" y="4" width="16" height="12" rx="2" stroke="#BA7517" stroke-width="1.5"/><path d="M2 8h16" stroke="#BA7517" stroke-width="1.5"/><path d="M6 12h3M6 14h5" stroke="#BA7517" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </div>
+      <div class="demo-title">Platform Dashboard</div>
+      <div class="demo-desc">Full player dashboard + admin backoffice with compliance alerts, player search and CSV export.</div>
+      <div class="demo-tags">
+        <span class="tag">Player dashboard</span>
+        <span class="tag">Admin panel</span>
+        <span class="tag">CSV export</span>
+      </div>
+      <span class="demo-link">View demo →</span>
+    </a>
   </div>
 
-  <div class="card">
-    <div class="section-title">Päevalimiidid</div>
-    <div class="row">
-      <div class="row-label">Sissemaksed täna</div>
-      <div style="display:flex;align-items:center;gap:8px;flex:1;justify-content:flex-end;">
-        <div class="progress-bg"><div class="progress-fill" id="dep-bar" style="width:0%;background:#378ADD;"></div></div>
-        <div style="font-size:14px;font-weight:500;white-space:nowrap;"><span id="dep-val">€0</span> / €100</div>
-      </div>
-    </div>
-    <div class="row">
-      <div class="row-label">Kaotused täna</div>
-      <div style="display:flex;align-items:center;gap:8px;flex:1;justify-content:flex-end;">
-        <div class="progress-bg"><div class="progress-fill" id="loss-bar" style="width:0%;background:#E24B4A;"></div></div>
-        <div style="font-size:14px;font-weight:500;white-space:nowrap;"><span id="loss-val">€0</span> / €50</div>
-      </div>
-    </div>
-    <div class="dep-row">
-      <input type="number" id="dep-input" placeholder="Lisa sissemakse €" min="1" />
-      <button class="btn" onclick="addDeposit()">Lisa</button>
-    </div>
-  </div>
+  <hr />
 
-  <div class="card">
-    <div class="section-title">Konto olek</div>
-    <div class="row">
-      <div class="row-label">Staatus</div>
-      <div><span class="badge badge-green" id="status-badge">Aktiivne</span></div>
-    </div>
-    <div class="row">
-      <div class="row-label">Self-exclusion</div>
-      <div><button class="btn btn-danger" id="excl-btn" onclick="selfExclude()">Blokeeri konto</button></div>
-    </div>
-    <div class="row">
-      <div class="row-label">Reality check intervall</div>
-      <div>
-        <select id="rc-select">
-          <option value="30">30 sek (demo)</option>
-          <option value="1800">30 min</option>
-          <option value="3600">60 min</option>
-        </select>
-      </div>
-    </div>
+  <div class="about">
+    <div class="about-title">About</div>
+    <div class="about-row"><span class="about-label">Location</span><span class="about-val">Tallinn, Estonia</span></div>
+    <div class="about-row"><span class="about-label">Specialisation</span><span class="about-val">iGaming frontend modules</span></div>
+    <div class="about-row"><span class="about-label">Tech</span><span class="about-val">HTML · CSS · JavaScript</span></div>
+    <div class="about-row"><span class="about-label">Delivery</span><span class="about-val">Fixed-price · 3–7 days per module</span></div>
+    <div class="about-row"><span class="about-label">LinkedIn</span><span class="about-val"><a class="about-link" href="https://www.linkedin.com/in/martin-adamson-648250356">martin-adamson</a></span></div>
   </div>
 </div>
-
-<script>
-  var running = false;
-  var seconds = 0;
-  var timerId = null;
-  var deposits = 0;
-  var losses = 0;
-  var excluded = false;
-  var lastRcAt = 0;
-
-  function pad(n) { return String(n).padStart(2, '0'); }
-  function formatTime(s) {
-    return pad(Math.floor(s/3600)) + ':' + pad(Math.floor((s%3600)/60)) + ':' + pad(s%60);
-  }
-
-  function tick() {
-    seconds++;
-    document.getElementById('timer').textContent = formatTime(seconds);
-    var rcSecs = parseInt(document.getElementById('rc-select').value);
-    if (seconds - lastRcAt >= rcSecs) { lastRcAt = seconds; showPopup(); }
-  }
-
-  function toggleTimer() {
-    if (excluded) { alert('Konto on blokeeritud.'); return; }
-    if (!running) {
-      running = true;
-      timerId = window.setInterval(tick, 1000);
-      document.getElementById('start-btn').textContent = 'Peata mäng';
-    } else {
-      running = false;
-      window.clearInterval(timerId);
-      document.getElementById('start-btn').textContent = 'Jätka mängu';
-    }
-  }
-
-  function showPopup() {
-    if (running) { running = false; window.clearInterval(timerId); document.getElementById('start-btn').textContent = 'Jätka mängu'; }
-    document.getElementById('popup-time').textContent = formatTime(seconds);
-    document.getElementById('popup-spent').textContent = '€' + deposits;
-    document.getElementById('popup').classList.add('show');
-  }
-
-  function continuePlaying() {
-    document.getElementById('popup').classList.remove('show');
-    if (!excluded) { running = true; timerId = window.setInterval(tick, 1000); document.getElementById('start-btn').textContent = 'Peata mäng'; }
-  }
-
-  function stopPlaying() { document.getElementById('popup').classList.remove('show'); }
-
-  function addDeposit() {
-    if (excluded) { alert('Konto on blokeeritud.'); return; }
-    var v = parseFloat(document.getElementById('dep-input').value) || 0;
-    if (v <= 0) return;
-    deposits = Math.min(deposits + v, 100);
-    losses = Math.min(losses + Math.round(v * 0.4), 50);
-    document.getElementById('dep-val').textContent = '€' + Math.round(deposits);
-    document.getElementById('loss-val').textContent = '€' + Math.round(losses);
-    document.getElementById('dep-bar').style.width = Math.min(deposits, 100) + '%';
-    document.getElementById('loss-bar').style.width = Math.min((losses/50)*100, 100) + '%';
-    document.getElementById('dep-input').value = '';
-    if (deposits >= 100) { document.getElementById('dep-bar').style.background = '#E24B4A'; alert('Päevalimiit täis!'); }
-  }
-
-  function selfExclude() {
-    if (confirm('Oled kindel? Konto blokeeritakse.')) {
-      excluded = true; running = false; window.clearInterval(timerId);
-      document.getElementById('start-btn').textContent = 'Alusta mängu';
-      document.getElementById('start-btn').disabled = true;
-      document.getElementById('excl-btn').disabled = true;
-      document.getElementById('status-badge').textContent = 'Blokeeritud';
-      document.getElementById('status-badge').className = 'badge badge-red';
-    }
-  }
-
-  function resetAll() {
-    running = false; excluded = false; seconds = 0; deposits = 0; losses = 0; lastRcAt = 0;
-    window.clearInterval(timerId);
-    document.getElementById('timer').textContent = '00:00:00';
-    document.getElementById('start-btn').textContent = 'Alusta mängu';
-    document.getElementById('start-btn').disabled = false;
-    document.getElementById('excl-btn').disabled = false;
-    document.getElementById('dep-val').textContent = '€0';
-    document.getElementById('loss-val').textContent = '€0';
-    document.getElementById('dep-bar').style.width = '0%';
-    document.getElementById('loss-bar').style.width = '0%';
-    document.getElementById('dep-bar').style.background = '#378ADD';
-    document.getElementById('status-badge').textContent = 'Aktiivne';
-    document.getElementById('status-badge').className = 'badge badge-green';
-    document.getElementById('popup').classList.remove('show');
-  }
-</script>
 </body>
 </html>
